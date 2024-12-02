@@ -1,0 +1,10 @@
+[init]
+	defaultBranch = main
+[user]
+	name = David Sevilla
+	email = sevilladavid83@gmail.com
+	signingkey = /Users/dsevilla/.ssh/id_ed25519.pub
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
