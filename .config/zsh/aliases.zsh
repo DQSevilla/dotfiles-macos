@@ -11,7 +11,11 @@ alias ezsh="e ${ZDOTDIR}"
 alias ezshrc="e ${ZDOTDIR}/.zshrc"
 alias ezplugin="e ${ZDOTDIR}/.zsh_plugins.txt"
 alias etrc="e ${XDG_CONFIG_HOME}/wezterm/*.lua"
+alias arc="e ${ZDOTDIR}/aliases.zsh"
 alias erc="e ${XDG_CONFIG_HOME}/nvim"
+
+### Common Dirs ###
+alias dev="cd ${HOME}/src/dev"
 
 ### ls ###
 alias ls="ls -F --color=tty"
