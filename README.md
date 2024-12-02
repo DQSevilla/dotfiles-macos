@@ -9,3 +9,8 @@ Add a new file to this repository in the correct directory, and run `stow .` at 
 ## Deleting a Configuration File From The System
 
 Run `stow -D .` to remove all managed files, or provide a specific path to remove just one.
+
+## TODOs
+
+- Make generic between arch linux/macos
+- install script
