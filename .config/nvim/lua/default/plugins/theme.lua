@@ -95,9 +95,9 @@ return {
 			signs = false,
 			highlight = {
 				pattern = {
-					-- NOTE(inner text):
+					-- e.g. TODO(JIRA-NUMBER):
 					[=[.*<((KEYWORDS)%(\(.{-1,}\))?):]=],
-					-- NOTE 1:
+					-- e.g. BUG 1:
 					[=[.*<((KEYWORDS)%(\s+\d+)?):]=],
 				},
 			},

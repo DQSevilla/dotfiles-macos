@@ -80,6 +80,8 @@ antidote load
 ### Other Configuration ###
 #=========================#
 
+setopt autocd
+
 # Python
 cmd "uv" && eval "$(uv generate-shell-completion zsh)"
 

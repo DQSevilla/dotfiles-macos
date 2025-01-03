@@ -53,7 +53,7 @@ local formatters_by_ft = {
 -- Ensuring servers and tools are installed. See :Mason
 require("mason").setup()
 
-local ensure_installed = { "gopls" }
+local ensure_installed = {}
 for _, tools in pairs(formatters_by_ft) do
 	for _, tool in ipairs(tools) do
 		table.insert(ensure_installed, tool)

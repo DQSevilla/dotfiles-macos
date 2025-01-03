@@ -8,6 +8,7 @@ end
 --[[ Font ]]
 config.font_size = 17.6
 local font_name = "BerkeleyMono Nerd Font"
+-- local font_name = "TX-02"
 config.font = wezterm.font(font_name)
 config.freetype_load_flags = "NO_HINTING"
 config.freetype_load_target = "Normal"
@@ -34,7 +35,7 @@ local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
 
 config.use_fancy_tab_bar = false
 
-config.tab_max_width = 18 
+config.tab_max_width = 18
 
 local function get_cwd(tab)
 	local cwd = tab.active_pane and tab.active_pane.current_working_dir or { file_path = "" }
