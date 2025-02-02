@@ -20,8 +20,23 @@ return {
 			-- LSP status updates & notifications
 			{ "j-hui/fidget.nvim", opts = {} },
 
+			-- Lua LSP for Wezterm config types
+			{ "justinsgithub/wezterm-types", lazy = true },
+
 			-- Lua LSP for neovim config, runtime, API, plugins, ...
-			{ "folke/neodev.nvim", opts = {} },
+			{
+				"folke/lazydev.nvim",
+				ft = "lua",
+				opts = {
+					library = {
+						-- Load luvit types when the `vim.uv` word is found
+						{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+
+						-- Load the wezterm types when the `wezterm` module is required
+						{ path = "wezterm-types", mods = { "wezterm" } },
+					},
+				},
+			},
 		},
 		config = function()
 			require("default.plugins.config.lsp")

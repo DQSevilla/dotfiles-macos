@@ -1,27 +1,39 @@
 --[[
 -- Install lazy.nvim for plugin loading
 --
--- Code borrowed from https://github.com/folke/lazy.nvim?tab=readme-ov-file#-installation
+-- Code borrowed from https://lazy.folke.io/installation
 --]]
 
--- Locate/Download lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "lazy/lazy.nivm"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	vim.fn.system({
+-- Bootstrap lazy.nvim
+local lazy_path = vim.fn.stdpath("data") .. "lazy/lazy.nivm"
+if not (vim.uv or vim.loop).fs_stat(lazy_path) then
+	local lazy_repo = "https://github.com/folke/lazy.nvim.git"
+	local out = vim.fn.system({
 		"git",
 		"clone",
 		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
 		"--branch=stable", -- latest stable release
-		lazypath,
+		lazy_repo,
+		lazy_path,
 	})
+	if vim.v.shell_error ~= 0 then
+		vim.api.nvim_echo({
+			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+			{ out, "WarningMsg" },
+			{ "\nPress any key to exit..." },
+		}, true, {})
+		vim.fn.getchar()
+		os.exit(1)
+	end
 end
 
 -- Add lazy to `runtimepath` so we can `require` it
----@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(lazy_path)
 
 -- Setup lazy and load plugins
-require("lazy").setup({ import = "default/plugins" }, {
+require("lazy").setup({
+	spec = {
+		{ import = "default/plugins" },
+	},
 	change_detection = { notify = false },
 })

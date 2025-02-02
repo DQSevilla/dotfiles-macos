@@ -2,6 +2,8 @@
 -- Autocompletion.
 --
 -- https://github.com/hrsh7th/nvim-cmp
+--
+-- TODO: Look into blink.cmp when its more mature, as a replacement
 --]]
 return {
 	{
@@ -79,6 +81,10 @@ return {
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{ name = "path" },
+					{
+						name = "lazydev",
+						group_index = 0, -- skip loading LuaLS completions
+					},
 				},
 			})
 		end,

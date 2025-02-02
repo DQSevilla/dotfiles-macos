@@ -9,14 +9,14 @@ return {
 	event = "VimEnter",
 	branch = "0.1.x", -- release branch (gets frequent updates)
 	dependencies = {
-		-- Utility functions needed by the plugin:
+		-- Required utilities
 		"nvim-lua/plenary.nvim",
 
 		-- Neovim core stuff can fill the Telescope picker:
 		"nvim-telescope/telescope-ui-select.nvim",
 
 		{
-			-- Use a minimal performant C implementaiton of fzf:
+			-- Use a minimal performant C implementation of fzf:
 			"nvim-telescope/telescope-fzf-native.nvim",
 			build = "make",
 			cond = function()

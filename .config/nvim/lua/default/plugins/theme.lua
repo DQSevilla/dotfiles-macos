@@ -67,19 +67,32 @@ end
 return {
 	{
 		"folke/tokyonight.nvim",
+		lazy = false,
 		priority = 1000,
 		init = function()
-			vim.cmd.colorscheme("tokyonight-moon")
+			vim.cmd.colorscheme("tokyonight")
 			vim.cmd.hi("Comment gui=none")
 		end,
 		config = function()
 			require("tokyonight").setup({
+				style = "moon",
+				light_style = "day",
+				transparent = false,
+				terminal_colors = true,
 				styles = {
 					keywords = { italic = false },
 				},
+				day_brightness = 0.3,
+				dim_inactive = true,
+				lualine_bold = false,
 				-- Required fields. TODO: should I do something special with them?
 				on_colors = function(_) end,
 				on_highlights = function(_, _) end,
+				cache = true,
+				plugins = {
+					-- let lazy.nvim automatically enable needed plugins
+					auto = true,
+				},
 			})
 		end,
 	},

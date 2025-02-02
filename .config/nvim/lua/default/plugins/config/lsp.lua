@@ -26,6 +26,8 @@ local servers = {
 			},
 		},
 	},
+	pyright = {},
+	bashls = {},
 	gopls = {
 		settings = {
 			gopls = {
@@ -48,6 +50,8 @@ local servers = {
 local formatters_by_ft = {
 	lua = { "stylua" },
 	go = { "gofumpt", "goimports", "goimports-reviser" },
+	python = { "isort", "black" },
+	bash = { "shellcheck", "shfmt" },
 }
 
 -- Ensuring servers and tools are installed. See :Mason
@@ -56,7 +60,9 @@ require("mason").setup()
 local ensure_installed = {}
 for _, tools in pairs(formatters_by_ft) do
 	for _, tool in ipairs(tools) do
-		table.insert(ensure_installed, tool)
+		if vim.fn.executable(tool) == 0 then
+			table.insert(ensure_installed, tool)
+		end
 	end
 end
 
@@ -64,6 +70,8 @@ vim.list_extend(ensure_installed, vim.tbl_keys(servers or {}))
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 require("mason-lspconfig").setup({
+	ensure_installed = servers,
+	automatic_installation = true,
 	handlers = {
 		function(server_name)
 			local server = servers[server_name] or {}

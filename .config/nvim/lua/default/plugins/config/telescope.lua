@@ -30,5 +30,12 @@ map("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
 map("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
 map("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 map("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+map("n", "<leader>sc", function()
+	builtin.find_files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "[S]earch Neovim [C]onfig" })
+
+if pcall(require, "todo-comments") then
+	map("n", "<leader>st", ":TodoTelescope<CR>", { desc = "[S]earch [T]ODOs" })
+end
 
 -- TODO: more to borrow from each config
