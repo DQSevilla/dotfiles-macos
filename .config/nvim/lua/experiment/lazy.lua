@@ -35,6 +35,5 @@ require("lazy").setup({
 	spec = {
 		{ import = "experiment/plugins" },
 	},
-	-- automatically check for plugin updates
-	checker = { enabled = true },
+	change_detection = { notify = false },
 })

@@ -96,7 +96,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local mappings = {
 			{
 				keys = "gd",
-				-- telescopeFunc = require("telescope.builtin").lsp_definitions,
+				telescopeFunc = require("telescope.builtin").lsp_definitions,
 				fallbackFunc = vim.lsp.buf.definition,
 				desc = "[G]oto [D]efinition",
 			},
@@ -107,14 +107,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			},
 			{
 				keys = "gr",
-				-- telescopeFunc = require("telescope.builtin").lsp_references,
+				telescopeFunc = require("telescope.builtin").lsp_references,
 				fallbackFunc = vim.lsp.buf.references,
 				desc = "[G]oto [R]eferences",
 			},
 			{
 				-- useful for languages that declare types without implementations
 				keys = "gI",
-				-- telescopeFunc = require("telescope.builtin").lsp_implementations,
+				telescopeFunc = require("telescope.builtin").lsp_implementations,
 				fallbackFunc = vim.lsp.buf.implementation,
 				desc = "[G]oto [I]mplementation",
 			},
@@ -138,21 +138,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			},
 			{
 				keys = "<leader>D",
-				-- telescopeFunc = require("telescope.builtin").lsp_type_definitions,
+				telescopeFunc = require("telescope.builtin").lsp_type_definitions,
 				fallbackFunc = vim.lsp.buf.type_definition,
 				desc = "Type [D]efinitions",
 			},
 			{
 				-- fuzzy find all symbols in current document
 				keys = "<leader>ds",
-				-- telescopeFunc = require("telescope.builtin").lsp_document_symbols,
+				telescopeFunc = require("telescope.builtin").lsp_document_symbols,
 				fallbackFunc = vim.lsp.buf.document_symbol,
 				desc = "[D]ocument [S]earch",
 			},
 			{
 				-- fuzzy finmd all symbols in current workspace
 				keys = "<leader>ws",
-				-- telescopeFunc = require("telescope.builtin").lsp_dynamic_workspace_symbols,
+				telescopeFunc = require("telescope.builtin").lsp_dynamic_workspace_symbols,
 				fallbackFunc = vim.lsp.buf.workspace_symbol,
 				desc = "[W]orkspace [S]earch",
 			},

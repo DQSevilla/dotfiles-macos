@@ -39,7 +39,7 @@ return {
 			},
 		},
 		config = function()
-			require("default.plugins.config.lsp")
+			require("experiment.plugins.config.lsp")
 		end,
 	},
 }

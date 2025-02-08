@@ -1,5 +1,7 @@
 --[[
 -- Various plugins bundled together.
+--
+-- https://github.com/folke/snacks.nvim
 --]]
 return {
 	"folke/snacks.nvim",
@@ -7,8 +9,7 @@ return {
 	priority = 1000,
 	---@type snacks.Config
 	opts = {
-		-- or leave it empty to use the default settings
-		-- refer to the configuration section below
+		-- Turn off treesitter and LSP for big files
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
 		dim = { enabled = true },

@@ -6,7 +6,7 @@ return {
 	"snacks.nvim",
 	keys = {
 		{
-			"<leader>gb",
+			"<leader>gB",
 			function()
 				Snacks.gitbrowse()
 			end,
