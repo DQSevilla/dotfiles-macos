@@ -34,6 +34,9 @@ return {
 
 						-- Load the wezterm types when the `wezterm` module is required
 						{ path = "wezterm-types", mods = { "wezterm" } },
+
+						-- snacks required everywhere as Snacks
+						{ path = "snacks.nvim", words = { "Snacks" } },
 					},
 				},
 			},
