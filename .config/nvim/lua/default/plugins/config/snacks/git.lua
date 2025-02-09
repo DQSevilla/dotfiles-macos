@@ -8,11 +8,11 @@ return {
 	"snacks.nvim",
 	keys = {
 		{
-			"<leader>gl",
+			"<leader>gL",
 			function()
 				Snacks.git.blame_line()
 			end,
-			desc = "[G]it [L]og",
+			desc = "[G]it [L]og Blame Line",
 		},
 	},
 }
