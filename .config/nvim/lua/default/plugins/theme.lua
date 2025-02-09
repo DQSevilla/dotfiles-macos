@@ -93,6 +93,17 @@ return {
 				},
 			},
 		},
+		keys = {
+			{
+				"<leader>st",
+				function()
+					-- FIXME: This todo searcher does not work with custom highlighting patterns
+					-- and LSP thinks todo_comments function doesn't exist
+					Snacks.picker.todo_comments()
+				end,
+				desc = "[S]earch [T]ODOs",
+			},
+		},
 	},
 	{
 		"nvim-lualine/lualine.nvim",
