@@ -1,5 +1,6 @@
 --[[
 -- Snacks: a collection of convenience plugins.
+-- See: default.plugins.config.snacks modules
 --
 -- https://github.com/folke/snacks.nvim
 --]]
