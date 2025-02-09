@@ -81,6 +81,7 @@ return {
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
 					{ name = "path" },
+					{ name = "render-markdown" },
 					{
 						name = "lazydev",
 						group_index = 0, -- skip loading LuaLS completions

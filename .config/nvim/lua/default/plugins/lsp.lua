@@ -17,9 +17,6 @@ return {
 			-- Autoformatting
 			"stevearc/conform.nvim",
 
-			-- LSP status updates & notifications
-			{ "j-hui/fidget.nvim", opts = {} },
-
 			-- Lua LSP for Wezterm config types
 			{ "justinsgithub/wezterm-types", lazy = true },
 
