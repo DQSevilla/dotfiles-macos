@@ -28,6 +28,8 @@ return {
 			{ "<leader>f_", hidden = true },
 			{ "<leader>w", group = "[W]orkspace" },
 			{ "<leader>w_", hidden = true },
+			{ "<leader>u", group = "[U]pdate" },
+			{ "<leader>u_", hidden = true },
 			{ "<leader>g", group = "[G]it" },
 			{ "<leader>g_", hidden = true },
 		})
