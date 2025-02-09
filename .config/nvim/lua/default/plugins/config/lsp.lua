@@ -96,33 +96,50 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local mappings = {
 			{
 				keys = "gd",
-				telescopeFunc = require("telescope.builtin").lsp_definitions,
-				fallbackFunc = vim.lsp.buf.definition,
+				picker_func = function()
+					Snacks.picker.lsp_definitions()
+				end,
+				fallback_func = vim.lsp.buf.definition,
 				desc = "[G]oto [D]efinition",
 			},
 			{
 				keys = "gD",
-				fallbackFunc = vim.lsp.buf.declaration,
+				picker_func = function()
+					Snacks.picker.lsp_declarations()
+				end,
+				fallback_func = vim.lsp.buf.declaration,
 				desc = "[G]oto [D]eclaration",
 			},
 			{
 				keys = "gr",
-				telescopeFunc = require("telescope.builtin").lsp_references,
-				fallbackFunc = vim.lsp.buf.references,
+				picker_func = function()
+					Snacks.picker.lsp_references()
+				end,
+				fallback_func = vim.lsp.buf.references,
 				desc = "[G]oto [R]eferences",
 			},
 			{
 				-- useful for languages that declare types without implementations
 				keys = "gI",
-				telescopeFunc = require("telescope.builtin").lsp_implementations,
-				fallbackFunc = vim.lsp.buf.implementation,
+				picker_func = function()
+					Snacks.picker.lsp_implementations()
+				end,
+				fallback_func = vim.lsp.buf.implementation,
 				desc = "[G]oto [I]mplementation",
+			},
+			{
+				keys = "gt",
+				picker_func = function()
+					Snacks.picker.lsp_type_definitions()
+				end,
+				fallback_func = vim.lsp.buf.type_definition(),
+				desc = "[G]oto [T]ype Definitions",
 			},
 			-- TODO: trouble.nvim?
 			-- FIXME: I feel like the following should be default behavior...
 			{
 				keys = "]d",
-				fallbackFunc = function() -- TODO: same but for [d?
+				fallback_func = function() -- TODO: same but for [d?
 					vim.diagnostic.goto_next()
 					vim.diagnostic.open_float()
 				end,
@@ -130,47 +147,45 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			},
 			{
 				keys = "[d",
-				fallbackFunc = function()
+				fallback_func = function()
 					vim.diagnostic.goto_prev()
 					vim.diagnostic.open_float()
 				end,
-				desc = "Jump to next [d]iagnostic",
-			},
-			{
-				keys = "<leader>D",
-				telescopeFunc = require("telescope.builtin").lsp_type_definitions,
-				fallbackFunc = vim.lsp.buf.type_definition,
-				desc = "Type [D]efinitions",
+				desc = "Jump to previous [d]iagnostic",
 			},
 			{
 				-- fuzzy find all symbols in current document
 				keys = "<leader>ds",
-				telescopeFunc = require("telescope.builtin").lsp_document_symbols,
-				fallbackFunc = vim.lsp.buf.document_symbol,
+				picker_func = function()
+					Snacks.picker.lsp_symbols()
+				end,
+				fallback_func = vim.lsp.buf.document_symbol,
 				desc = "[D]ocument [S]earch",
 			},
 			{
-				-- fuzzy finmd all symbols in current workspace
+				-- fuzzy find all symbols in current workspace
 				keys = "<leader>ws",
-				telescopeFunc = require("telescope.builtin").lsp_dynamic_workspace_symbols,
-				fallbackFunc = vim.lsp.buf.workspace_symbol,
+				picker_func = function()
+					Snacks.picker.lsp_workspace_symbols()
+				end,
+				fallback_func = vim.lsp.buf.workspace_symbol,
 				desc = "[W]orkspace [S]earch",
 			},
 			{
 				-- rename accross files
 				keys = "<leader>rn",
-				fallbackFunc = vim.lsp.buf.rename,
+				fallback_func = vim.lsp.buf.rename,
 				desc = "[R]e[n]ame",
 			},
 			{
 				-- execute a code action
 				keys = "<leader>ca",
-				fallbackFunc = vim.lsp.buf.code_action,
+				fallback_func = vim.lsp.buf.code_action,
 				desc = "[C]ode [A]ction",
 			},
 			{
 				keys = "K",
-				fallbackFunc = vim.lsp.buf.hover,
+				fallback_func = vim.lsp.buf.hover,
 				desc = "Hover Documentation",
 			},
 		}
@@ -180,13 +195,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 		end
 
-		-- Map to the better telescope equivalents when possible:
-		local have_telescope = pcall(require, "telescope.builtin")
+		-- Map to the better snacks.picker equivalents when possible:
+		local have_snacks_picker = pcall(require, "snacks.picker")
 		for _, m in ipairs(mappings) do
-			local f = m.fallbackFunc
-			if have_telescope and m.telescopeFunc then
-				f = m.telescopeFunc
-			end
+			local f = (have_snacks_picker and m.picker_func) or m.fallback_func
 
 			map(m.keys, f, m.desc)
 		end
