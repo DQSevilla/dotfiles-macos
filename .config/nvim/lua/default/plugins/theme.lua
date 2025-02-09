@@ -26,29 +26,7 @@
 -- FIXME:
 -- FIXIT:
 -- ISSUE:
-
-local test = {
-  {
-    {
-      {
-        {
-          {
-            {
-              {
-                {
-                  {},
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-]]
-
-local progressive = { "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█" }
+--]]
 
 -- I like using the math/PL symbols for "top type" and "bottom type" for file progress
 local function progress_fmt(progress)
@@ -135,10 +113,5 @@ return {
 				},
 			})
 		end,
-	},
-	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-		opts = { indent = { char = progressive } },
 	},
 }
