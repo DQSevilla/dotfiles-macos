@@ -12,5 +12,4 @@ Run `stow -D .` to remove all managed files, or provide a specific path to remov
 
 ## TODOs
 
-- Make generic between arch linux/macos
-- install script
+- install script or nix

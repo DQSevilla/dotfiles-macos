@@ -7,7 +7,9 @@
 return {
 	"snacks.nvim",
 	opts = {
-		picker = {},
+		picker = {
+			layout = "default",
+		},
 		explorer = {},
 	},
 	keys = {
