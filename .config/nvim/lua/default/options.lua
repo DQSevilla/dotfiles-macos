@@ -68,5 +68,5 @@ opt.scrolloff = 10
 -- TODO: move all this and/or delete
 opt.tabstop = 2
 opt.shiftwidth = 2
-opt.expandtab = false
+opt.expandtab = true
 opt.shiftround = false
