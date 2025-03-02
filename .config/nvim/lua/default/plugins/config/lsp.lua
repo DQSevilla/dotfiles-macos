@@ -16,17 +16,6 @@ end
 
 -- Language servers and their settings
 local servers = {
-	lua_ls = {
-		settings = {
-			Lua = {
-				diagnostics = {
-					globals = { "vim" },
-				},
-				completion = { callSnippet = "Replace" },
-			},
-		},
-	},
-	pyright = {},
 	bashls = {},
 	gopls = {
 		settings = {
@@ -44,6 +33,17 @@ local servers = {
 			},
 		},
 	},
+	lua_ls = {
+		settings = {
+			Lua = {
+				diagnostics = {
+					globals = { "vim" },
+				},
+				completion = { callSnippet = "Replace" },
+			},
+		},
+	},
+	pyright = {},
 }
 
 -- Language formatters
@@ -57,6 +57,13 @@ local formatters_by_ft = {
 -- Ensuring servers and tools are installed. See :Mason
 require("mason").setup()
 
+local ensure_installed_servers = {}
+for server, _ in pairs(servers) do
+	if vim.fn.executable(server) == 0 then
+		table.insert(ensure_installed_servers, server)
+	end
+end
+
 local ensure_installed = {}
 for _, tools in pairs(formatters_by_ft) do
 	for _, tool in ipairs(tools) do
@@ -66,11 +73,11 @@ for _, tools in pairs(formatters_by_ft) do
 	end
 end
 
-vim.list_extend(ensure_installed, vim.tbl_keys(servers or {}))
+vim.list_extend(ensure_installed, ensure_installed_servers or {})
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 require("mason-lspconfig").setup({
-	ensure_installed = servers,
+	ensure_installed = ensure_installed_servers,
 	automatic_installation = true,
 	handlers = {
 		function(server_name)
@@ -199,7 +206,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local have_snacks_picker = pcall(require, "snacks.picker")
 		for _, m in ipairs(mappings) do
 			local f = (have_snacks_picker and m.picker_func) or m.fallback_func
-
 			map(m.keys, f, m.desc)
 		end
 
