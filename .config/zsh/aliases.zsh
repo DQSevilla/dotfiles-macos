@@ -6,6 +6,9 @@ alias e="${EDITOR}"
 ### Zsh Config ###
 alias zource="exec zsh"
 
+### Update ###
+alias update="brew update && brew upgrade & antidote update"
+
 ### Common Editing ###
 alias ezsh="e ${ZDOTDIR}"
 alias ezshrc="e ${ZDOTDIR}/.zshrc"
@@ -13,6 +16,11 @@ alias ezplugin="e ${ZDOTDIR}/.zsh_plugins.txt"
 alias etrc="e ${XDG_CONFIG_HOME}/wezterm/*.lua"
 alias arc="e ${ZDOTDIR}/aliases.zsh"
 alias erc="e ${XDG_CONFIG_HOME}/nvim"
+
+_efd() {
+  fd "${@}" -X "${EDITOR}"
+}
+cmd fd && alias efd="_efd"
 
 ### Common Dirs ###
 alias dev="cd ${HOME}/src/dev"
@@ -29,3 +37,8 @@ alias gst="git status"
 alias gco="git checkout"
 alias ga="git add"
 alias gcm="git commit"
+alias gb="git branch"
+_gdab() {
+  git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
+}
+alias gdab="_gdab"
