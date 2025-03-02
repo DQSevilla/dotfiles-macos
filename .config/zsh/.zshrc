@@ -5,8 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-#### zsh configuration ####
-
 #===============#
 ### Utilities ###
 #===============#
@@ -31,31 +29,14 @@ function cmd() {
 # fi
 # ```
 
-# Platforms
-export PLATFORM_MACOS_ARM="macos-arm"
-export PLATFORM_LINUX="linux"
-
-if [[ "$(uname)" == "Darwin" && "$(uname -p)" == "arm" ]]; then
-	export PLATFORM="${PLATFORM_MACOS_ARM}"
-else
-	export PLATFORM="${PLATFORM_LINUX}"
-fi
-
 # XDG Base Directory Specification
 # See https://wiki.archlinux.org/title/XDG_Base_Directory
-if [[ "${PLATFORM}" == "${PLATFORM_MACOS_ARM}" ]]; then
-	export XDG_CACHE_HOME="${HOME}/Library/Caches/XDG-Cache"
-	#ln -s "${XDG_CACHE_HOME}" "${HOME}/.cache"
-elif [[ "${PLATFORM}" == "${PLATFORM_LINUX}" ]]; then
-	export XDG_CACHE_HOME="${HOME}/.cache"
-fi
+export XDG_CACHE_HOME="${HOME}/Library/Caches/XDG-Cache"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 
-# PATH
-if [[ "${PLATFORM}" == "${PLATFORM_MACOS_ARM}" ]]; then
-	export PATH="/opt/homebrew/bin:${PATH}"  # For Apple Silicon Macs
-fi
+# Homebrew binary path for Apple Silicon Macs
+export PATH="/opt/homebrew/bin:${PATH}"
 
 # Editor
 if cmd "nvim"; then
@@ -75,23 +56,38 @@ export ZSH_COMPDUMP="${ZDOTDIR}/.zcompdump-lambda"  # TODO: make generic
 source "$(brew --prefix)/opt/antidote/share/antidote/antidote.zsh"
 antidote load
 
-
 #=========================#
-### Other Configuration ###
+###  Zsh Configuration  ###
 #=========================#
 
 setopt autocd
+setopt autopushd
 
-# Python
-cmd "uv" && eval "$(uv generate-shell-completion zsh)"
+# Comments allowed in interactive shell prompt
+setopt interactivecomments
+
+# Smarter substring search
+bindkey -M viins '^[[A' history-substring-search-up
+bindkey -M viins '^[[B' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+bindkey -M vicmd '^P' history-substring-search-up
+bindkey -M vicmd '^N' history-substring-search-down
 
 if [[ -f "${ZDOTDIR}/aliases.zsh" ]]; then
 	source "${ZDOTDIR}/aliases.zsh"
 fi
 
+#=========================#
+### Tools Configuration ###
+#=========================#
+
 # Golang
 cmd "go" && export GOPATH="${XDG_CONFIG_HOME}/go"
 cmd "go" && export GOPATH="${XDG_CACHE_HOME}/go/mod"
+
+# Python
+cmd "uv" && eval "$(uv generate-shell-completion zsh)"
 
 # Ripgrep
 cmd "rg" && export RIPGREP_CONFIG_HOME="${XDG_CONFIG_HOME}/ripgrep/config"
