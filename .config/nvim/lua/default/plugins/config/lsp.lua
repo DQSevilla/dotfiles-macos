@@ -5,13 +5,13 @@
 -- Extend LSP Client capabilities with functionality from plugins
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 if pcall(require, "cmp_nvim_lsp") then
-	-- stylua: ignore
-	capabilities = vim.tbl_deep_extend(
-		"force",
-		{},
-		capabilities,
-		require("cmp_nvim_lsp").default_capabilities()
-	)
+    -- stylua: ignore
+    capabilities = vim.tbl_deep_extend(
+        "force",
+        {},
+        capabilities,
+        require("cmp_nvim_lsp").default_capabilities()
+    )
 end
 
 -- Language servers and their settings
@@ -33,6 +33,7 @@ local servers = {
 			},
 		},
 	},
+	jdtls = {},
 	lua_ls = {
 		settings = {
 			Lua = {
@@ -43,6 +44,7 @@ local servers = {
 			},
 		},
 	},
+	metals = {},
 	pyright = {},
 }
 
@@ -52,54 +54,53 @@ local formatters_by_ft = {
 	go = { "gofumpt", "goimports", "goimports-reviser" },
 	python = { "isort", "black" },
 	bash = { "shellcheck", "shfmt" },
+	scala = { "scalafmt" },
 }
 
 -- Ensuring servers and tools are installed. See :Mason
 require("mason").setup()
 
+-- Create a list of servers to install, ONLY if they are not already on the PATH
 local ensure_installed_servers = {}
-for server, _ in pairs(servers) do
-	if vim.fn.executable(server) == 0 then
-		table.insert(ensure_installed_servers, server)
+for server_name, _ in pairs(servers) do
+	if vim.fn.executable(server_name) == 0 then
+		table.insert(ensure_installed_servers, server_name)
 	end
 end
 
-local ensure_installed = {}
+-- Create a list of formatters to install, ONLY if they are not on the PATH
+local ensure_installed_formatters = {}
 for _, tools in pairs(formatters_by_ft) do
 	for _, tool in ipairs(tools) do
 		if vim.fn.executable(tool) == 0 then
-			table.insert(ensure_installed, tool)
+			table.insert(ensure_installed_formatters, tool)
 		end
 	end
 end
 
-vim.list_extend(ensure_installed, ensure_installed_servers or {})
+-- Combine the two lists for mason-tool-installer
+local ensure_installed = vim.list_extend(ensure_installed_formatters, ensure_installed_servers)
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
+-- The single, correct place to configure your LSPs
 require("mason-lspconfig").setup({
 	ensure_installed = ensure_installed_servers,
-	automatic_installation = true,
+	automatic_enable = true,
 	handlers = {
 		function(server_name)
 			local server = servers[server_name] or {}
 
 			-- Server-specific overrides to LSP capabilities
-			-- stylua: ignore
-			server.capabilities = vim.tbl_deep_extend(
-				"force",
-				{},
-				capabilities,
-				server.capabilities or {}
-			)
+			server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 			require("lspconfig")[server_name].setup(server)
 		end,
 	},
 })
 
+-- The rest of your file remains the same...
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
 	callback = function(event)
-		-- TODO: more mappings
 		local mappings = {
 			{
 				keys = "gd",
@@ -142,24 +143,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				fallback_func = vim.lsp.buf.type_definition(),
 				desc = "[G]oto [T]ype Definitions",
 			},
-			-- TODO: trouble.nvim?
-			-- FIXME: I feel like the following should be default behavior...
-			{
-				keys = "]d",
-				fallback_func = function() -- TODO: same but for [d?
-					vim.diagnostic.goto_next()
-					vim.diagnostic.open_float()
-				end,
-				desc = "Jump to next [d]iagnostic",
-			},
-			{
-				keys = "[d",
-				fallback_func = function()
-					vim.diagnostic.goto_prev()
-					vim.diagnostic.open_float()
-				end,
-				desc = "Jump to previous [d]iagnostic",
-			},
+			-- {
+			-- 	keys = "]d",
+			-- 	fallback_func = function()
+			-- 		vim.diagnostic.goto_next()
+			-- 		vim.diagnostic.open_float()
+			-- 	end,
+			-- 	desc = "Jump to next [d]iagnostic",
+			-- },
+			-- {
+			-- 	keys = "[d",
+			-- 	fallback_func = function()
+			-- 		vim.diagnostic.goto_prev()
+			-- 		vim.diagnostic.open_float()
+			-- 	end,
+			-- 	desc = "Jump to previous [d]iagnostic",
+			-- },
 			{
 				-- fuzzy find all symbols in current document
 				keys = "<leader>ds",
@@ -197,12 +196,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			},
 		}
 
-		-- buffer-specific keymap for when LSP attached
 		local map = function(keys, func, desc)
 			vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 		end
 
-		-- Map to the better snacks.picker equivalents when possible:
 		local have_snacks_picker = pcall(require, "snacks.picker")
 		for _, m in ipairs(mappings) do
 			local f = (have_snacks_picker and m.picker_func) or m.fallback_func
@@ -211,7 +208,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		local client = assert(vim.lsp.get_client_by_id(event.data.client_id), "must have valid LSP client")
 
-		-- Highlight references of word under cursor, and clear them when moving the cursor:
 		if client.server_capabilities.documentHighlightProvider then
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				buffer = event.buf,
@@ -230,18 +226,19 @@ if pcall(require, "conform") then
 	require("conform").setup({
 		notify_on_error = false,
 		format_on_save = function(bufnr)
-			-- disable format_on_save lsp_fallback for languages without
-			-- a standard coding style:
-			local disable_filetypes = { c = true, cpp = true }
+			local disable_filetypes = { c = true, cpp = true, scala = true }
 			return {
 				bufnr = bufnr,
-				timeout_ms = 500,
+				timeout_ms = 1000,
 				lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
 			}
 		end,
 		formatters_by_ft = formatters_by_ft,
 	})
 end
+
+vim.g.conform_log_level = "debug"
+vim.g.conform_log = true
 
 --[[ Notifications for LSP Progress ]]
 

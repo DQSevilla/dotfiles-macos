@@ -15,7 +15,7 @@ alias ezshrc="e ${ZDOTDIR}/.zshrc"
 alias ezplugin="e ${ZDOTDIR}/.zsh_plugins.txt"
 alias etrc="e ${XDG_CONFIG_HOME}/wezterm/*.lua"
 alias arc="e ${ZDOTDIR}/aliases.zsh"
-alias erc="e ${XDG_CONFIG_HOME}/nvim"
+alias erc="cd ${XDG_CONFIG_HOME}/nvim && e ${XDG_CONFIG_HOME}/nvim"
 
 _efd() {
   fd "${@}" -X "${EDITOR}"
@@ -42,3 +42,9 @@ _gdab() {
   git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
 }
 alias gdab="_gdab"
+
+_update() {
+  brew update && brew upgrade
+  antidote update --all
+}
+alias update="_update"

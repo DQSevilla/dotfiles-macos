@@ -59,12 +59,13 @@ return {
 				terminal_colors = true,
 				styles = {
 					keywords = { italic = false },
+					comments = { italic = false },
 				},
-				day_brightness = 0.3,
+				day_brightness = 0.35,
 				dim_inactive = true,
-				lualine_bold = false,
+				lualine_bold = true,
 				-- Required fields. TODO: should I do something special with them?
-				on_colors = function(_) end,
+				on_colors = function(colors) end,
 				on_highlights = function(_, _) end,
 				cache = true,
 				plugins = {
@@ -110,6 +111,12 @@ return {
 		dependencies = { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		config = function()
 			require("lualine").setup({
+				options = {
+					theme = "auto",
+					-- Set separators to empty strings for a blocky look
+					component_separators = "|",
+					section_separators = "",
+				},
 				-- Sections are |a|b|c ... x|y|z|
 				sections = {
 					lualine_y = {
@@ -134,6 +141,12 @@ return {
 		dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
 		---@module 'render-markdown'
 		---@type render.md.UserConfig
+		opts = {},
+	},
+	{
+		"m4xshen/hardtime.nvim",
+		lazy = false,
+		dependencies = { "MunifTanjim/nui.nvim" },
 		opts = {},
 	},
 }

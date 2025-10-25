@@ -60,6 +60,20 @@ antidote load
 ###  Zsh Configuration  ###
 #=========================#
 
+# History
+# See https://zsh.sourceforge.io/Doc/Release/Options.html#History
+HISTFILE="${XDG_CACHE_HOME}/zsh/history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt append_history       # append to history file
+setopt share_history        # share history between sessions
+setopt hist_expire_dups_first # expire duplicates first
+setopt hist_ignore_dups     # ignore duplicates
+setopt hist_ignore_all_dups # ignore all duplicates
+setopt hist_find_no_dups    # do not find duplicates
+setopt hist_save_no_dups    # do not save duplicates
+setopt hist_verify          # do not execute immediately
+
 setopt autocd
 setopt autopushd
 
@@ -81,6 +95,12 @@ fi
 #=========================#
 ### Tools Configuration ###
 #=========================#
+
+# Java
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Scala
+export PATH="$PATH:/Users/dsevilla/Library/Application Support/Coursier/bin"
 
 # Golang
 cmd "go" && export GOPATH="${XDG_CONFIG_HOME}/go"
