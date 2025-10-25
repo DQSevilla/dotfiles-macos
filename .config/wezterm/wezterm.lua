@@ -7,7 +7,8 @@ end
 
 --[[ Font ]]
 config.font_size = 17.6
-local font_name = "BerkeleyMono Nerd Font"
+local font_name = "TX02 Nerd Font"
+-- local font_name = "BerkeleyMono Nerd Font"
 -- local font_name = "TX-02"
 config.font = wezterm.font(font_name)
 config.freetype_load_flags = "NO_HINTING"
