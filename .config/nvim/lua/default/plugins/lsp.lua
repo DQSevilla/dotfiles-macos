@@ -14,9 +14,6 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
 
-			-- Autoformatting
-			"stevearc/conform.nvim",
-
 			-- Lua LSP for Wezterm config types
 			{ "justinsgithub/wezterm-types", lazy = true },
 

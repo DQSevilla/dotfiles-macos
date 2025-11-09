@@ -32,6 +32,8 @@ return {
 			{ "<leader>u_", hidden = true },
 			{ "<leader>g", group = "[G]it" },
 			{ "<leader>g_", hidden = true },
+			{ "<leader>t", group = "[T]rouble" },
+			{ "<leader>t_", hidden = true },
 		})
 	end,
 }

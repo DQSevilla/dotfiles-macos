@@ -6,5 +6,7 @@
 
 return {
 	"snacks.nvim",
-	opts = {},
+	opts = {
+    bigfile = {},
+  },
 }

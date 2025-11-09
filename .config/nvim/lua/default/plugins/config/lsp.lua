@@ -1,103 +1,50 @@
---[[
--- Configuration for LSP and other code intelligence plugins.
---]]
+-- Setup advanced LSP capabilities
+local capabilities = (function()
+	if pcall(require, "blink.cmp") then
+		return require("blink.cmp").get_lsp_capabilities()
+	end
+	return vim.lsp.protocol.make_client_capabilities()
+end)()
 
--- Extend LSP Client capabilities with functionality from plugins
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-if pcall(require, "cmp_nvim_lsp") then
-    -- stylua: ignore
-    capabilities = vim.tbl_deep_extend(
-        "force",
-        {},
-        capabilities,
-        require("cmp_nvim_lsp").default_capabilities()
-    )
-end
+-- Set capabilities for all servers
+vim.lsp.config("*", {
+	capabilities = capabilities,
+})
 
 -- Language servers and their settings
 local servers = {
-	bashls = {},
-	gopls = {
-		settings = {
-			gopls = {
-				gofumpt = true,
-				hints = {
-					assignVariableTypes = true,
-					compositeLiteralFields = true,
-					compositeLiteralTypes = true,
-					constantValues = true,
-					functionTypeParameters = true,
-					parameterNames = true,
-					rangeVariableTypes = true,
-				},
-			},
-		},
-	},
-	jdtls = {},
 	lua_ls = {
 		settings = {
 			Lua = {
 				diagnostics = {
+					-- vim global vars/tables known to LSP
 					globals = { "vim" },
 				},
 				completion = { callSnippet = "Replace" },
 			},
 		},
 	},
-	metals = {},
-	pyright = {},
 }
 
--- Language formatters
-local formatters_by_ft = {
-	lua = { "stylua" },
-	go = { "gofumpt", "goimports", "goimports-reviser" },
-	python = { "isort", "black" },
-	bash = { "shellcheck", "shfmt" },
-	scala = { "scalafmt" },
-}
-
--- Ensuring servers and tools are installed. See :Mason
 require("mason").setup()
 
--- Create a list of servers to install, ONLY if they are not already on the PATH
-local ensure_installed_servers = {}
-for server_name, _ in pairs(servers) do
-	if vim.fn.executable(server_name) == 0 then
-		table.insert(ensure_installed_servers, server_name)
+-- Only install a server via Mason if not in the PATH
+local mason_installed_servers = {}
+for server, _ in pairs(servers) do
+	if vim.fn.executable(server) == 0 then
+		table.insert(mason_installed_servers, server)
 	end
 end
 
--- Create a list of formatters to install, ONLY if they are not on the PATH
-local ensure_installed_formatters = {}
-for _, tools in pairs(formatters_by_ft) do
-	for _, tool in ipairs(tools) do
-		if vim.fn.executable(tool) == 0 then
-			table.insert(ensure_installed_formatters, tool)
-		end
-	end
-end
-
--- Combine the two lists for mason-tool-installer
-local ensure_installed = vim.list_extend(ensure_installed_formatters, ensure_installed_servers)
-require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
--- The single, correct place to configure your LSPs
 require("mason-lspconfig").setup({
-	ensure_installed = ensure_installed_servers,
-	automatic_enable = true,
-	handlers = {
-		function(server_name)
-			local server = servers[server_name] or {}
-
-			-- Server-specific overrides to LSP capabilities
-			server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-			require("lspconfig")[server_name].setup(server)
-		end,
-	},
+	ensure_installed = mason_installed_servers,
 })
 
--- The rest of your file remains the same...
+-- Enable and apply config for each server
+for server, custom_conf in pairs(servers) do
+	vim.lsp.config(server, custom_conf or {})
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
 	callback = function(event)
@@ -140,7 +87,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				picker_func = function()
 					Snacks.picker.lsp_type_definitions()
 				end,
-				fallback_func = vim.lsp.buf.type_definition(),
+				fallback_func = vim.lsp.buf.type_definition,
 				desc = "[G]oto [T]ype Definitions",
 			},
 			-- {
@@ -221,26 +168,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 	end,
 })
-
-if pcall(require, "conform") then
-	require("conform").setup({
-		notify_on_error = false,
-		format_on_save = function(bufnr)
-			local disable_filetypes = { c = true, cpp = true, scala = true }
-			return {
-				bufnr = bufnr,
-				timeout_ms = 1000,
-				lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-			}
-		end,
-		formatters_by_ft = formatters_by_ft,
-	})
-end
-
-vim.g.conform_log_level = "debug"
-vim.g.conform_log = true
-
---[[ Notifications for LSP Progress ]]
 
 ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
 local progress = vim.defaulttable()
