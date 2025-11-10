@@ -1,9 +1,10 @@
 -- Language formatters
 local formatters_by_ft = {
-	lua = { "stylua" },
-	go = { "gofumpt", "goimports", "goimports-reviser" },
-	python = { "isort", "black" },
 	bash = { "shellcheck", "shfmt" },
+	go = { "gofumpt", "goimports", "goimports-reviser" },
+	lua = { "stylua" },
+	python = { "isort", "black" },
+	rust = { "rustfmt" },
 	scala = { "scalafmt" },
 }
 

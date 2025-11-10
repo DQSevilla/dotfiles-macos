@@ -70,3 +70,7 @@ opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
 opt.shiftround = false
+
+vim.diagnostic.config({
+	virtual_lines = true,
+})

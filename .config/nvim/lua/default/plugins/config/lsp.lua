@@ -13,6 +13,23 @@ vim.lsp.config("*", {
 
 -- Language servers and their settings
 local servers = {
+	bashls = {},
+	gopls = {
+		settings = {
+			gopls = {
+				gofumpt = true,
+				hints = {
+					assignVariableTypes = true,
+					compositeLiteralFields = true,
+					compositeLiteralTypes = true,
+					constantValues = true,
+					functionTypeParameters = true,
+					parameterNames = true,
+					rangeVariableTypes = true,
+				},
+			},
+		},
+	},
 	lua_ls = {
 		settings = {
 			Lua = {
@@ -21,6 +38,23 @@ local servers = {
 					globals = { "vim" },
 				},
 				completion = { callSnippet = "Replace" },
+			},
+		},
+	},
+	rust_analyzer = {
+		settings = {
+			["rust_analyzer"] = {
+				checkOnSave = {
+					command = "clippy",
+				},
+				inlayHints = {
+					parameterHints = {
+						displaySelf = false,
+					},
+					typeHints = {
+						hideImplied = true,
+					},
+				},
 			},
 		},
 	},
@@ -164,6 +198,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 				buffer = event.buf,
 				callback = vim.lsp.buf.clear_references,
+			})
+		end
+
+		if client.server_capabilities.inlayHintProvider then
+			vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+		end
+
+		-- Keymap to toggle inlay hints
+		map("<leader>ci", function()
+			local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+
+			vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = event.buf })
+		end, "LSP: [C]ode Toggle [I]nlay Hints")
+
+		if client.server_capabilities.codeLensProvider then
+			map("<leader>cl", vim.lsp.codelens.run, "Run CodeLens")
+
+			vim.api.nvim_create_autocmd("CursorHold", {
+				buffer = event.buf,
+				callback = vim.lsp.codelens.refresh,
+				desc = "LSP: [C]ode Run Code[L]ens",
 			})
 		end
 	end,

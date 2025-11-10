@@ -40,6 +40,7 @@ return {
 				"markdown_inline",
 				"ocaml",
 				"python",
+				"rust",
 				"scala",
 				"sql",
 				"toml",
